@@ -111,19 +111,6 @@ void Graph::RemplirDegree()
 
 		Pointers[i] = --(DegreeNodes[PointersDegreeTableau[i]]).end();// vector indicate sur le element dans le Degreenodes list вектор указывающий на элемент в таблице со степенями, прмя уже в liste
 
-		//list<int>::iterator it = ListNodes[i].begin();
-		//list<int>::iterator nullIter;
-		//int32_t k= 0;
-		//for (k; (k < nbNodes+1)&& it != ListNodes[i].end();k++)//while (it!=ListNodes[i].end())
-		//{
-		//	if (k == *it)
-		//	{
-		//		ListPointersNode[i].push_back( it);
-		//		++it;
-		//	}
-		//	else
-		//		ListPointersNode[i].push_back(nullIter);
-		//}
 	}
 
 }
@@ -149,26 +136,20 @@ void Graph::UpdateDeegreeNode(int v, int degree)
 
 					--PointersDegreeTableau[x];//diminuer le degree de x, pq on supprimer 
 				}
-
-				//ListNodes[x].erase(ListPointersNode[x][v]);//suprime le v du list de voisins de x
 			}
-			// Возможно нужен еще один контейнер, который для каждой вершину v содержит лист указателей на их соседей в листе ListNodes? 
-			// либо как блять их удалить
-			// le cas quand on a δ(v) == 1 => soit nbNodes == 1 ; soit nbNodes == 2
 		}
 	
 	nbNodes = nbNodes - 1;
 	nbEdges = nbEdges - nbVoisin;
-	//supprimer v de toute les lists
-
-	ListNodes[v].clear();
-	DegreeNodes[degree].erase(Pointers[v]);//suprimer v de la liste de voisins+degree
+ 
+	ListNodes[v].clear();	
+	DegreeNodes[degree].erase(Pointers[v]);
 	PointersDegreeTableau[v] = -1;
 	
 
 }
 
-vector<int> Graph::GetMinDegreeNode()const  // какая сложность относительно |G| ?
+vector<int> Graph::GetMinDegreeNode()const  // O(voisin) = max = O(n)
 {
 	vector<int> result(2);
 	if (nbNodes == 0)
@@ -184,7 +165,7 @@ vector<int> Graph::GetMinDegreeNode()const  // какая сложность о�
 		}
 		i++;
 	}
-	return result;// в принципе невозможно // если возвращаем 0,0 - значит у нас пусто? 
+	return result;
 
 }
 
@@ -224,15 +205,11 @@ int main()
 
 	clock_t curTime;
 	curTime = clock();
-	
-
-
-	//тут читаем граф из csv файла за время E + V
 	int m = 16;
 	int n = 0;
 	
-	int n1 = 10;//pour verifier, nb de sommets
-	int m1=0;//pour verifier, nb de edges
+	int n1 = 10;
+	int m1=0;
 	
 	string nameFile;
 	cin >> nameFile;
@@ -243,7 +220,7 @@ int main()
 	map<string, string> row;
 
 	list<pair<int, int>> graph;
-	int firstZero = 0;//while we don't see node with number 0, its=0, sinon 1;
+	int firstZero = 0;
 
 	while (csvInput >> row)
 	{
@@ -291,7 +268,6 @@ int main()
 	auto started = std::chrono::high_resolution_clock::now();
 	Graph H = G;
 	auto done = std::chrono::high_resolution_clock::now();
-	// тут из прочитанного графа составляем лист по степеням вершин, это тоже вроде время E + V , те общее время пока что 2|G| + const
 
 	std::cout << "initialization H duration :" << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 
@@ -304,40 +280,20 @@ int main()
 
 	done = std::chrono::high_resolution_clock::now();
 
-
-	/*fstream fout;
-	fout.open(nameFile+"test.csv", ios::out);
-
-	fout << "nodes" << "," << "Density" << "\n";*/
-
-
-	/*fstream fout;
-	fout.open("testDezeer.csv", ios::out);
-	fout << "FindMinDegree,UpdateDegree,SetNewSubgraphH" << "\n";
-	auto startFindMin= std::chrono::high_resolution_clock::now();*/
-
 	while (G.GetNbNodes() > 0)
 	{
-		//auto startFindMin = std::chrono::high_resolution_clock::now();
 		v = G.GetMinDegreeNode();
-		//auto endFindMin= std::chrono::high_resolution_clock::now();
-		//fout << std::chrono::duration<double, std::nano>(endFindMin - startFindMin).count() << ",";
 		if (v[0] == v[1] && v[0] == 0)
 			break;
 
 		G.SetNextDeletedNodeDegree(v[1]-1);
 		
-		G.UpdateDeegreeNode(v[0],v[1]);//здесь тоже вопросик. потому что мы храним и список со степенями и надо попутно знать что удалять.
-		//auto endUpdate=std::chrono::high_resolution_clock::now();
-		//fout << std::chrono::duration<double, std::nano>(endUpdate - endFindMin).count() << ",";
+		G.UpdateDeegreeNode(v[0],v[1]);
 
 		if (G.Density() > H.Density() && G.GetNbNodes() > 0)
 		{
-			H = G;// присваивание должно скорее всего за |G| выполнятся , может 2|G|, но думаю не больше. 
-			//fout << H.GetNbNodes() << "," << H.Density() << "\n";
+			H = G;
 		}
-		//auto endSetNewH = std::chrono::high_resolution_clock::now();
-		//fout << std::chrono::duration<double, std::nano>(endSetNewH-endUpdate).count() << "\n";
 	}
 
 
