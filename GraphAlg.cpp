@@ -32,7 +32,7 @@ private:
 public:
 
 	Graph() { nbNodes = 0;}
-	Graph(uint32_t nbV) 
+	Graph(int32_t nbV) 
 	{
 		
 		nbNodes = nbV;
