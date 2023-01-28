@@ -17,22 +17,19 @@ class Graph {
 private:
 	int32_t nbNodes;
 	int32_t nbEdges=-1;
-
 	int32_t nbOperations = 0;
 	int nextDeletedeNodeDegree=0;
-	vector<list<int>> ListNodes;
 
+	vector<list<int>> ListNodes;
 	vector<list<int>::iterator> Pointers;// element - pointer for element in DegreeNodes in list
 	vector<int> PointersDegreeTableau; //elements - degree de i-éme sommet
-
 	vector<list<int>> DegreeNodes;// tableau de δ degree de sommets;dans chaque element de vecteur on a la liste de sommets, qui ont le meme degre δ
-
 	//vector<vector<list<int>::iterator>>ListPointersNode;// tableau de sommets; dans chaque elem on a le pointeur sur le place de celle voisoin dans le ListNodes
 
 public:
 
 	Graph() { nbNodes = 0;}
-	Graph(uint32_t nbV) 
+	Graph(int32_t nbV) 
 	{
 		
 		nbNodes = nbV;
@@ -40,15 +37,9 @@ public:
 		nextDeletedeNodeDegree = 0;
 		ListNodes.resize(nbNodes+1, list<int> {});
 
-		DegreeNodes.resize(nbV + 1, list<int>{});
+		DegreeNodes.resize(nbNodes + 1, list<int>{});
 		Pointers.resize(nbNodes + 1, list<int>::iterator{});
 		PointersDegreeTableau.resize(nbNodes + 1, 0);
-
-		
-		//ListPointersNode.resize(nbV+1);
-
-		
-
 	}
 
 	double Density() const { return double(nbEdges) / nbNodes; }
@@ -88,7 +79,6 @@ public:
 	}
 
 	void WriteResult(string namefile,int isZero);
-	
 };
 
 
@@ -138,15 +128,12 @@ void Graph::UpdateDeegreeNode(int v, int degree)
 				}
 			}
 		}
-	
 	nbNodes = nbNodes - 1;
 	nbEdges = nbEdges - nbVoisin;
  
 	ListNodes[v].clear();	
 	DegreeNodes[degree].erase(Pointers[v]);
 	PointersDegreeTableau[v] = -1;
-	
-
 }
 
 vector<int> Graph::GetMinDegreeNode()const  // O(voisin) = max = O(n)
@@ -166,16 +153,13 @@ vector<int> Graph::GetMinDegreeNode()const  // O(voisin) = max = O(n)
 		i++;
 	}
 	return result;
-
 }
 
 void Graph::WriteResult(string namefile, int isZero)
 {
-
 	fstream foutResult;
 	string nameFileResult = namefile + "NewResultAlg.csv";
 	foutResult.open(nameFileResult, ios::out);
-
 	foutResult << "node1" << "," << "node2" << "\n";
 
 	for (int i = 0; i <ListNodes.size(); i++)
@@ -191,34 +175,26 @@ void Graph::WriteResult(string namefile, int isZero)
 					else
 						foutResult << i << "," << voisin  << "\n";
 				}
-
 			}
 		}
 	}
-
 }
-
-
 
 int main()
 {
-
 	clock_t curTime;
 	curTime = clock();
 	int m = 16;
 	int n = 0;
-	
-	int n1 = 10;
 	int m1=0;
 	
 	string nameFile;
 	cin >> nameFile;
-	
+
 	auto started1 = std::chrono::high_resolution_clock::now();
 	csvstream csvInput(nameFile+".csv");
 
 	map<string, string> row;
-
 	list<pair<int, int>> graph;
 	int firstZero = 0;
 
@@ -287,31 +263,25 @@ int main()
 			break;
 
 		G.SetNextDeletedNodeDegree(v[1]-1);
-		
 		G.UpdateDeegreeNode(v[0],v[1]);
 
 		if (G.Density() > H.Density() && G.GetNbNodes() > 0)
-		{
 			H = G;
-		}
+		
 	}
-
-
 
 	curTime = clock() - curTime;
 	done = std::chrono::high_resolution_clock::now();
 
 	cout << "Input data : nodes = " << n << "  ; edges = " << m1 << endl;
-
 	std::chrono::duration<double, std::nano> duration = done - started1;
-
 	cout << "running time: " << curTime / CLOCKS_PER_SEC << endl;
 	std::cout << "millisecond duration :" << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 	std::cout << "nanosecond duration: " << duration.count();
 
 	H.WriteResult(nameFile, firstZero);
 
-	return 0;//возвращаем Η
+	return 0;//return H
 
 }
 
