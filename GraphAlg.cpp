@@ -277,9 +277,18 @@ int main()
 	std::chrono::duration<double, std::nano> duration = done - started1;
 	cout << "running time: " << curTime / CLOCKS_PER_SEC << endl;
 	std::cout << "millisecond duration :" << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
-	std::cout << "nanosecond duration: " << duration.count();
+	std::cout << "nanosecond duration: " << duration.count() << endl;
 
-	H.WriteResult(nameFile, firstZero);
+
+
+	ofstream resultDenst;
+	resultDenst.open("densityOutput.txt",ios::app);
+	resultDenst<<nameFile<< " Initial density: " << double(1.0 * m1 / n) << " Find density: " << H.Density();
+
+	ofstream resultTime;
+	resultTime.open("dataTime.txt", ios::app);
+	resultTime << nameFile << ';' << n << ';' << m1 << ';' << double(1.0 * m1 / n) << H.Density() <<';'<< duration.count() << '\n';
+	//H.WriteResult(nameFile, firstZero);
 
 	return 0;//return H
 
