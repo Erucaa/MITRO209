@@ -1,3 +1,4 @@
+Name,Nodes,Edges,Density,Nodes_H,Edges_H,newDensity,Time
 deezer_europe_edges,28281,92752,3.27966,272,2302,8.46324,3.18906e+09
 facebook_company,22468,6495,0.289078,73,259,3.54795,7.90322e+08
 facebook_gov,22467,6880,0.306227,64,222,3.46875,8.31433e+08
